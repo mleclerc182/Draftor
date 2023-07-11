@@ -1,0 +1,20 @@
+<div id="image-boxes" class="two-by-six-grid">
+  <% 6.times do %>
+    <div class="row">
+      <% 2.times do %>
+        <div class="box"></div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div id="image-list" class="spacing">
+  <% @random_images.each do |image| %>
+    <div class="image-item" data-image-url="<%= image.url %>">
+      <%= image_tag(image.url) %>
+    </div>
+  <% end %>
+</div>
+
+<%= javascript_pack_tag 'application' %>
+<%= stylesheet_pack_tag 'application' %>
