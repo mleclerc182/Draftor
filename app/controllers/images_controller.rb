@@ -11,8 +11,26 @@ class ImagesController < ApplicationController
     count = params[:count].to_i
     selected_images = params[:selectedImages]
 
+    selected_images.each_with_index do |x, index|
+      if x.starts_with?('/assets/')
+        short = x.gsub("/assets/","")
+        new_image = Image.find_by(short_name: short)&.url
+        if new_image.nil?
+          selected_images[index] = short
+        else
+          selected_images[index] = new_image
+        end
+      end
+    end
+    puts selected_images
+
+
     images = Image.where.not(url: selected_images).order(Arel.sql('RAND()')).limit(count)
 
     render json: { images: images }
+  end
+
+  def test_method
+    render json: 23
   end
 end

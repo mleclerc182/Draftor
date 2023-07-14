@@ -1,10 +1,15 @@
 import Rails from "@rails/ujs";
 import Turbolinks from "turbolinks";
+import Swal from "sweetalert2";
 
 Rails.start();
 Turbolinks.start();
 
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
+    let assignedVariable;
     const imageBoxes = document.querySelectorAll('.box');
     const imageItems = document.querySelectorAll('.image-item');
     const selectedImages = new Set(); // Keeps track of selected images
@@ -15,6 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageUrl = item.querySelector('img').getAttribute('src');
 
         const imageBox = Array.from(imageBoxes).find((box, index) => index === currentIndex && !box.classList.contains('filled-box'));
+
+        const testPromise = testMethod();
+        testPromise
+            .then((testValue) => {
+                assignedVariable = testValue; // Assign the value to the global variable
+                console.log('Assigned Variable:', assignedVariable);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
 
         if (imageBox) {
             const image = new Image();
@@ -33,8 +49,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentIndex++; // Increment the current index to move to the next image box
 
                 if (currentIndex === imageBoxes.length) {
-                    // If all image boxes are filled, reset the current index to 0
-                    currentIndex = 0;
+                   currentIndex = 0;
+                    console.log(selectedImages)
+                    const  textarea = "sfdsdfsdfsfasa"
+                    // Show a SweetAlert popup
+                    Swal.fire({
+                        title: 'Deck Code',
+                        html: '<textarea id="popup-textarea" readonly>' + textarea + '</textarea>',
+                        showCancelButton: true,
+                        confirmButtonText: 'Copy',
+                        cancelButtonText: 'Close',
+                        allowOutsideClick: false,
+
+                        preConfirm: () => {
+                           navigator.clipboard.writeText(textarea)
+                            Swal.fire({
+                                title: 'Text copied to clipboard!',
+                                html: '<textarea id="popup-textarea" readonly>' + textarea + '</textarea>',
+                                showCancelButton: false,
+                                allowOutsideClick: false
+                            });
+                        }
+                    });
+
+
                 }
 
                 selectedImages.add(imageUrl); // Add the selected image to the set of selected images
@@ -45,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         replaceImageList(newImages);
                         attachClickEventToNewImages();
                     });
+                console.log("ASSIGNEDVARIABLE", assignedVariable)
             };
         }
     };
@@ -70,23 +109,40 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(error);
         }
     }
+    function testMethod() {
+        return new Promise((resolve, reject) => {
+            fetch('/images/test_method', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': Rails.csrfToken()
+                }
+            })
+                .then((response) => response.json())
+                .then((data) => resolve(data))
+                .catch((error) => reject(error));
+        });
+    }
+
 
     function replaceImageList(newImages) {
         const imageList = document.getElementById('image-list');
         imageList.innerHTML = '';
 
         newImages.forEach((image) => {
-
             const imageItem = document.createElement('div');
             imageItem.classList.add('image-item');
 
             const imgElement = document.createElement('img');
-            imgElement.src = image.url;
+            if (image.url.startsWith('http')) {
+                imgElement.src = image.url;
+            } else {
+                imgElement.src = '/assets/' + image.url;
+            }
             imgElement.alt = 'Image';
             imageItem.appendChild(imgElement);
 
             imageList.appendChild(imageItem);
-
         });
     }
 
@@ -99,4 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+
 });
+

@@ -10,12 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_10_153826) do
+ActiveRecord::Schema.define(version: 2023_07_13_233835) do
 
   create_table "images", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "url"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.string "description"
+    t.string "code_name"
+    t.string "short_name"
+    t.integer "cost"
+    t.integer "power"
   end
 
 end
