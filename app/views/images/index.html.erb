@@ -10,7 +10,7 @@
 <h1 class="center-text">Choose your card</h1>
 <div class="container-fluid">
   <div class="custom-container d-flex justify-content-center">
-    <div id="image-list" class="spacing">
+    <div id="image-list">
       <% @random_images.each do |image| %>
         <div class="image-item" data-image-url="<%= image.url %>">
           <% if image.url.starts_with?('http') %>
@@ -25,8 +25,9 @@
 </div>
 
 
+<div class="center-button">
+  <%= link_to 'New Draft', root_path, method: :get, class: 'btn btn-success' %>
+</div>
 
 
 
-<%= javascript_pack_tag 'application' %>
-<%= stylesheet_pack_tag 'application' %>

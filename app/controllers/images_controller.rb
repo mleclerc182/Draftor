@@ -30,7 +30,40 @@ class ImagesController < ApplicationController
     render json: { images: images }
   end
 
-  def test_method
-    render json: 23
+  def get_code_name
+    image_url = params[:imageUrl]
+    if image_url.starts_with?('/assets/')
+      image_url = image_url.gsub("/assets/","")
+    end
+      code_name =  Image.find_by(short_name: image_url)&.code_name
+      if code_name.nil?
+        code_name = Image.find_by(url: image_url)&.code_name
+      end
+    render json: {code_name: code_name}
   end
+
+  def get_current_cost
+    image_url = params[:imageUrl]
+    if image_url.starts_with?('/assets/')
+      image_url = image_url.gsub("/assets/","")
+    end
+    cost =  Image.find_by(short_name: image_url)&.cost
+    if cost.nil?
+      cost = Image.find_by(url: image_url)&.cost
+    end
+    render json: {cost: cost}
+  end
+
+  def get_current_power
+    image_url = params[:imageUrl]
+    if image_url.starts_with?('/assets/')
+      image_url = image_url.gsub("/assets/","")
+    end
+    power =  Image.find_by(short_name: image_url)&.power
+    if power.nil?
+      power = Image.find_by(url: image_url)&.power
+    end
+    render json: {power: power}
+  end
+
 end
